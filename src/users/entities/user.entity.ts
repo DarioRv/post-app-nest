@@ -1,6 +1,6 @@
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Comment } from '../../posts/entities/comment.entity';
 import { Post } from '../../posts/entities/post.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class User {
@@ -19,8 +19,8 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ array: true, default: 'user' })
-  roles: string[];
+  @Column({ default: 'user' })
+  role: string;
 
   @Column({ default: true })
   isActive: boolean;
