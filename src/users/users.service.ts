@@ -22,6 +22,10 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
+    if (this.findOne(createUserDto.email))
+      throw new BadRequestException(
+        `The email '${createUserDto.email}' is already registered`,
+      );
     try {
       createUserDto = {
         ...createUserDto,
@@ -39,10 +43,10 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    try {
-      const user = await this.userRepository.findOneBy({ id });
-      if (!user) throw new NotFoundException(`User with id '${id}' not found`);
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException(`User with id '${id}' not found`);
 
+    try {
       const { password } = updateUserDto;
       if (password) {
         updateUserDto = {
@@ -71,9 +75,10 @@ export class UsersService {
 
     const queryBuilder = this.userRepository.createQueryBuilder('user');
     user = await queryBuilder
-      .where(`username = :username OR fullName = :fullName`, {
+      .where(`username = :username OR fullName = :fullName OR email = :email`, {
         username: term,
         fullName: term,
+        email: term,
       })
       .getOne();
 
