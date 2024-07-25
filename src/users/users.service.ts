@@ -22,10 +22,22 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    if (this.findOne(createUserDto.email))
+    const isEmailAlreadyRegistered = await this.userRepository.existsBy({
+      email: createUserDto.email,
+    });
+    if (isEmailAlreadyRegistered)
       throw new BadRequestException(
         `The email '${createUserDto.email}' is already registered`,
       );
+
+    const isUsernameAlreadyTaken = await this.userRepository.existsBy({
+      username: createUserDto.username,
+    });
+    if (isUsernameAlreadyTaken)
+      throw new BadRequestException(
+        `The username '${createUserDto.username}' is already taken`,
+      );
+
     try {
       createUserDto = {
         ...createUserDto,
