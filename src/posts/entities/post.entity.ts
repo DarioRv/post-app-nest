@@ -26,10 +26,10 @@ export class Post {
   @Column({ default: true })
   isActive: boolean;
 
-  @ManyToOne(() => User, (user) => user.posts)
+  @ManyToOne(() => User, (user) => user.posts, { eager: true })
   author: User;
 
-  @OneToMany(() => Comment, (comment) => comment.post)
+  @OneToMany(() => Comment, (comment) => comment.post, { eager: true })
   comments: Comment[];
 
   @BeforeInsert()
