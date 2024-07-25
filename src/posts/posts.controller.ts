@@ -12,6 +12,7 @@ import { PostsService } from './posts.service';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { GetUserFromAuth } from '../auth/decorators/get-user.decorator';
 import { User } from '../users/entities/user.entity';
+import { CreateCommentDto } from './dto/create-comment.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -42,5 +43,29 @@ export class PostsController {
     @GetUserFromAuth('id') userId: string,
   ) {
     return this.postsService.delete(id, userId);
+  }
+
+  @Auth()
+  @Post(':id/comments')
+  commentAPost(
+    @Body()
+    createCommentDto: CreateCommentDto,
+    @Param('id', ParseUUIDPipe)
+    postId,
+    @GetUserFromAuth()
+    user: User,
+  ) {
+    return this.postsService.commentAPost(createCommentDto, postId, user);
+  }
+
+  @Auth()
+  @Delete('comments/:id')
+  deleteComment(
+    @Param('id', ParseUUIDPipe)
+    id: string,
+    @GetUserFromAuth('id')
+    userId: string,
+  ) {
+    return this.postsService.deleteComment(id, userId);
   }
 }

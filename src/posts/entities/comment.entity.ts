@@ -19,6 +19,9 @@ export class Comment {
   @Column()
   createdAt: Date;
 
+  @Column({ default: true })
+  isActive: boolean;
+
   @ManyToOne(() => User, (user) => user.comments, { eager: true })
   user: User;
 
