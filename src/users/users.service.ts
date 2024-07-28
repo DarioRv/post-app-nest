@@ -101,8 +101,11 @@ export class UsersService {
   }
 
   async remove(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user || !user.isActive)
+      throw new NotFoundException(`User with id '${id}' not found`);
+
     try {
-      const user = await this.findOne(id);
       await this.userRepository.update({ id: user.id }, { isActive: false });
     } catch (error) {
       this.handleDbErrors(error);
